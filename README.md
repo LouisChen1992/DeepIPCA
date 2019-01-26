@@ -38,7 +38,7 @@ Here we report the results for the number of factor with the best validation Sha
 <p align="center">
  <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/UV.png" width="400" title="Naive IPCA">
  <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/Kelly_naive/UV.png" width="400" title="Iterative IPCA">
-</p>  |
+</p>
 
 - Fama-McBeth Type Alpha (1e-03)
 
