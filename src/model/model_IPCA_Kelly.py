@@ -44,7 +44,7 @@ class ModelIPCA_Kelly:
 		w = np.dot(np.linalg.pinv(Sigma), mu)
 		return w
 
-	def train(self, dl_train, initial_f_list, save=True, 
+	def train(self, dl_train, initial_f_list, save=True, nFactorMax=46, 
 		maxIter=1024, printOnConsole=True, printFreq=8, tol=1e-06):
 		for _, (I_macro, I, R, mask) in enumerate(dl_train.iterateOneEpoch(subEpoch=False)):
 			R_reshape = np.expand_dims(R[mask], axis=1)
@@ -54,6 +54,8 @@ class ModelIPCA_Kelly:
 			I_list = np.split(I_reshape, splits)
 
 			for nFactors, initial_f in zip(range(1, self._individual_feature_dim+1), initial_f_list):
+				if nFactors > nFactorMax:
+					break
 				self._Gamma = np.zeros((self._individual_feature_dim, nFactors))
 				f_list = list(np.expand_dims(initial_f, axis=2))
 
@@ -70,13 +72,13 @@ class ModelIPCA_Kelly:
 					if nIter > 1 and dGamma < tol:
 						success = True
 						break
+				factors = np.squeeze(np.array(f_list), axis=2)
+				self._w = self._Markowitz(factors)
+				if save:
+					np.savez(os.path.join(self._logdir, 'model_%d.npz' %nFactors), gamma=self._Gamma, w=self._w)
 				
 				if success:
-					factors = np.squeeze(np.array(f_list), axis=2)
-					self._w = self._Markowitz(factors)
 					deco_print('Converged! (nFactors = %d)' %nFactors)
-					if save:
-						np.savez(os.path.join(self._logdir, 'model_%d.npz' %nFactors), gamma=self._Gamma, w=self._w)
 				else:
 					deco_print('WARNING: Exceed maximum number of iterations! (nFactors = %d)' %nFactors)
 
