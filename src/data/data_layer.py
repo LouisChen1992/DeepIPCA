@@ -1,7 +1,5 @@
 import numpy as np
 
-from src.utils import deco_print
-
 class DataInRamInputLayer:
 	""" Class that defines a data input layer. 
 	"""
