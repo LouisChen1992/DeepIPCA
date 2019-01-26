@@ -22,6 +22,11 @@ Here we report the results for the number of factor with the best validation Sha
 | Iterative IPCA |
 | Deep IPCA      |
 
+<p align="center">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/SR.png" width="400" title="Naive IPCA">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/Kelly_naive/SR.png" width="400" title="Iterative IPCA">
+</p>
+
 - Unexplained Variation
 
 | Model          | Train | Valid | Test  |
@@ -29,6 +34,11 @@ Here we report the results for the number of factor with the best validation Sha
 | Naive IPCA     | 0.99  | 0.99  | 0.99  |
 | Iterative IPCA |
 | Deep IPCA      |
+
+<p align="center">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/UV.png" width="400" title="Naive IPCA">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/Kelly_naive/UV.png" width="400" title="Iterative IPCA">
+</p>  |
 
 - Fama-McBeth Type Alpha (1e-03)
 
@@ -38,6 +48,11 @@ Here we report the results for the number of factor with the best validation Sha
 | Iterative IPCA |
 | Deep IPCA      |
 
+<p align="center">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/Alpha.png" width="400" title="Naive IPCA">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/Kelly_naive/Alpha.png" width="400" title="Iterative IPCA">
+</p>
+
 - Weighted Fama-McBeth Type Alpha (1e-04)
 
 | Model          | Train | Valid | Test  |
@@ -46,7 +61,10 @@ Here we report the results for the number of factor with the best validation Sha
 | Iterative IPCA |
 | Deep IPCA      |
 
-
+<p align="center">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/Alpha_weighted.png" width="400" title="Naive IPCA">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/Kelly_naive/Alpha_weighted.png" width="400" title="Iterative IPCA">
+</p>
 
 ### Author
 - [Luyang Chen](https://github.com/louisChen1992)
