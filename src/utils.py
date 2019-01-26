@@ -1,4 +1,6 @@
+import os
 import numpy as np
+import matplotlib.pyplot as plt
 
 def deco_print(line, end='\n'):
 	print('>==================> ' + line, end=end)
@@ -38,3 +40,68 @@ def FamaMcBethAlpha(residual, mask, weighted=False):
 	else:
 		Alpha = np.mean(np.square(residual.sum(axis=0) / T_i))
 	return Alpha
+
+def calculateAllStatistics(model, dl_train, dl_valid, dl_test):
+	nFactors_list = np.arange(model._individual_feature_dim) + 1
+	SR = np.zeros((3, model._individual_feature_dim), dtype=float)
+	UV = np.zeros((3, model._individual_feature_dim), dtype=float)
+	Alpha = np.zeros((3, model._individual_feature_dim), dtype=float)
+	Alpha_weighted = np.zeros((3, model._individual_feature_dim), dtype=float)
+	for k in range(len(nFactors_list)):
+		nFactors = nFactors_list[k]
+		model.loadSavedModel(nFactors)
+		SR[0, k], UV[0, k], Alpha[0, k], Alpha_weighted[0, k] = model.calculateStatistics(dl_train)
+		SR[1, k], UV[1, k], Alpha[1, k], Alpha_weighted[1, k] = model.calculateStatistics(dl_valid)
+		SR[2, k], UV[2, k], Alpha[2, k], Alpha_weighted[2, k] = model.calculateStatistics(dl_test)
+	return SR, UV, Alpha, Alpha_weighted
+
+def plotStatistics(nFactors, SR, UV, Alpha, Alpha_weighted, plotPath=None, figsize=(8,6)):
+	plt.figure('SR', figsize=figsize)
+	plt.plot(nFactors, SR[0], label='train')
+	plt.plot(nFactors, SR[1], label='valid')
+	plt.plot(nFactors, SR[2], label='test')
+	plt.xlabel('Number of Factors')
+	plt.ylabel('Sharpe Ratio')
+	plt.legend()
+	plt.title('Sharpe Ratio with Numbers of Factors')
+	if plotPath:
+		plt.savefig(os.path.join(plotPath, 'SR.pdf'))
+		plt.savefig(os.path.join(plotPath, 'SR.png'))
+
+	plt.figure('UV', figsize=figsize)
+	plt.plot(nFactors, UV[0], label='train')
+	plt.plot(nFactors, UV[1], label='valid')
+	plt.plot(nFactors, UV[2], label='test')
+	plt.xlabel('Number of Factors')
+	plt.ylabel('Unexplained Variation')
+	plt.legend()
+	plt.title('Unexplained Variation with Numbers of Factors')
+	if plotPath:
+		plt.savefig(os.path.join(plotPath, 'UV.pdf'))
+		plt.savefig(os.path.join(plotPath, 'UV.png'))
+
+	plt.figure('Alpha', figsize=figsize)
+	plt.plot(nFactors, Alpha[0], label='train')
+	plt.plot(nFactors, Alpha[1], label='valid')
+	plt.plot(nFactors, Alpha[2], label='test')
+	plt.xlabel('Number of Factors')
+	plt.ylabel('Fama-McBeth Type Alpha')
+	plt.legend()
+	plt.title('Fama-McBeth Type Alpha with Numbers of Factors')
+	if plotPath:
+		plt.savefig(os.path.join(plotPath, 'Alpha.pdf'))
+		plt.savefig(os.path.join(plotPath, 'Alpha.png'))
+
+	plt.figure('Alpha (Weighted)', figsize=figsize)
+	plt.plot(nFactors, Alpha_weighted[0], label='train')
+	plt.plot(nFactors, Alpha_weighted[1], label='valid')
+	plt.plot(nFactors, Alpha_weighted[2], label='test')
+	plt.xlabel('Number of Factors')
+	plt.ylabel('Fama-McBeth Type Alpha (Weighted)')
+	plt.legend()
+	plt.title('Fama-McBeth Type Alpha (Weighted) with Numbers of Factors')
+	if plotPath:
+		plt.savefig(os.path.join(plotPath, 'Alpha_weighted.pdf'))
+		plt.savefig(os.path.join(plotPath, 'Alpha_weighted.png'))
+
+	plt.show()
