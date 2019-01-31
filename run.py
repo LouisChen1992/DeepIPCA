@@ -9,6 +9,8 @@ from src.model.model_IPCA_naive import ModelIPCA_Naive
 from src.model.model_IPCA_FFN import ModelIPCA_FFN
 
 tf.flags.DEFINE_string('config', '', 'Path to the file with configurations')
+tf.flags.DEFINE_string('logdir', '', 'Path to save logs and checkpoints')
+tf.flags.DEFINE_boolean('randomInitFactors', False, 'Initialize factors randomly')
 tf.flags.DEFINE_boolean('evalStats', True, 'Calculate statistics')
 
 FLAGS = tf.flags.FLAGS
@@ -31,7 +33,7 @@ def main(_):
 						nFactor=config['nFactor'], 
 						lr=config['lr'], 
 						dropout=config['dropout'],
-						logdir=config['logdir'], 
+						logdir=FLAGS.logdir, 
 						dl=dl_train, 
 						is_train=True)
 	gpu_options = tf.GPUOptions(allow_growth=True)
@@ -39,9 +41,12 @@ def main(_):
 	sess = tf.Session(config=sess_config)
 	model.randomInitialization(sess)
 
-	model_naive = ModelIPCA_Naive(46, 'model/IPCA_naive')
-	model_naive.loadSavedModel(config['nFactor'])
-	initial_F = model_naive.getFactors(dl_train)
+	if FLAGS.randomInitFactors:
+		initial_F = None
+	else:
+		model_naive = ModelIPCA_Naive(46, 'model/IPCA_naive')
+		model_naive.loadSavedModel(config['nFactor'])
+		initial_F = model_naive.getFactors(dl_train)
 
 	loss_epoch_list = model.train(sess, initial_F=initial_F)
 
@@ -52,7 +57,7 @@ def main(_):
 								nFactor=config['nFactor'], 
 								lr=config['lr'], 
 								dropout=config['dropout'],
-								logdir=config['logdir'], 
+								logdir=FLAGS.logdir, 
 								dl=dl_valid, 
 								is_train=False, 
 								force_var_reuse=True)
@@ -62,7 +67,7 @@ def main(_):
 								nFactor=config['nFactor'], 
 								lr=config['lr'], 
 								dropout=config['dropout'],
-								logdir=config['logdir'], 
+								logdir=FLAGS.logdir, 
 								dl=dl_test, 
 								is_train=False, 
 								force_var_reuse=True)
