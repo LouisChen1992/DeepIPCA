@@ -1,0 +1,17 @@
+{
+	"individual_feature_file": "datasets/CharAll_na_rm_all_50_percent_train.npz",
+	"individual_feature_file_valid": "datasets/CharAll_na_rm_all_50_percent_valid.npz",
+	"individual_feature_file_test": "datasets/CharAll_na_rm_all_50_percent_test.npz",
+
+	"individual_feature_dim": 46, 
+	"tSize_train": 240, 
+	"tSize_valid": 60, 
+	"tSize_test": 300, 
+	"hidden_dims": [], 
+	"lr": 0.2, 
+	"dropout": 1.0,
+
+	"num_epoch": 128,
+	"max_iter": 2048,
+	"tol": 0.000001
+}
