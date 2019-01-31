@@ -237,7 +237,7 @@ class ModelIPCA_FFN:
 				saver.save(sess, save_path=os.path.join(self._logdir_nFactor, 'model-best'))
 			time_elapse = time.time() - time_start
 			time_est = time_elapse / (epoch+1) * numEpoch
-			deco_print('Epoch %d Loss: %0.4f' %new_loss)
+			deco_print('Epoch %d Loss: %0.4f' %(epoch, new_loss))
 			deco_print('Epoch %d Elapse/Estimate: %0.2fs/%0.2fs' %(epoch, time_elapse, time_est))
 			print('\n')
 
