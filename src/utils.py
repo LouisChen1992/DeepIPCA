@@ -41,7 +41,7 @@ def FamaMcBethAlpha(residual, mask, weighted=False):
 		Alpha = np.mean(np.square(residual.sum(axis=0) / T_i))
 	return Alpha
 
-def calculateAllStatistics(model, dl_train, dl_valid, dl_test, nFactorMax=46):
+def calculateAllStatistics(model, dl_train, dl_valid, dl_test, nFactorMax=20):
 	nFactors_list = np.arange(min(model._individual_feature_dim, nFactorMax)) + 1
 	count = len(nFactors_list)
 	SR = np.zeros((3, count), dtype=float)
