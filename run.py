@@ -10,8 +10,10 @@ from src.model.model_IPCA_FFN import ModelIPCA_FFN
 
 tf.flags.DEFINE_string('config', '', 'Path to the file with configurations')
 tf.flags.DEFINE_string('logdir', '', 'Path to save logs and checkpoints')
+tf.flags.DEFINE_integer('nFactor', 1, 'Number of Factors')
+
+tf.flags.DEFINE_boolean('isTrain', True, 'Calculate statistics')
 tf.flags.DEFINE_boolean('randomInitFactors', False, 'Initialize factors randomly')
-tf.flags.DEFINE_boolean('evalStats', True, 'Calculate statistics')
 
 FLAGS = tf.flags.FLAGS
 
@@ -30,7 +32,7 @@ def main(_):
 	model = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
 						tSize=config['tSize_train'], 
 						hidden_dims=config['hidden_dims'], 
-						nFactor=config['nFactor'], 
+						nFactor=FLAGS.nFactor, 
 						lr=config['lr'], 
 						dropout=config['dropout'],
 						logdir=FLAGS.logdir, 
@@ -39,46 +41,45 @@ def main(_):
 	gpu_options = tf.GPUOptions(allow_growth=True)
 	sess_config = tf.ConfigProto(gpu_options=gpu_options)
 	sess = tf.Session(config=sess_config)
-	model.randomInitialization(sess)
 
-	if FLAGS.randomInitFactors:
-		initial_F = None
-	else:
-		model_naive = ModelIPCA_Naive(46, 'model/IPCA_naive')
-		model_naive.loadSavedModel(config['nFactor'])
-		initial_F = model_naive.getFactors(dl_train)
+	if FLAGS.isTrain:
+		model.randomInitialization(sess)
+		if FLAGS.randomInitFactors:
+			initial_F = None
+		else:
+			model_naive = ModelIPCA_Naive(46, 'model/IPCA_naive')
+			model_naive.loadSavedModel(FLAGS.nFactor)
+			initial_F = model_naive.getFactors(dl_train)
+		loss_epoch_list = model.train(sess, initial_F=initial_F, 
+			numEpoch=config['num_epoch'], maxIter=config['max_iter'], tol=config['tol'])
 
-	loss_epoch_list = model.train(sess, initial_F=initial_F, 
-		numEpoch=config['num_epoch'], maxIter=config['max_iter'], tol=config['tol'])
-
-	if FLAGS.evalStats:
-		model_valid = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
-								tSize=config['tSize_valid'], 
-								hidden_dims=config['hidden_dims'], 
-								nFactor=config['nFactor'], 
-								lr=config['lr'], 
-								dropout=config['dropout'],
-								logdir=FLAGS.logdir, 
-								dl=dl_valid, 
-								is_train=False, 
-								force_var_reuse=True)
-		model_test = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
-								tSize=config['tSize_test'], 
-								hidden_dims=config['hidden_dims'], 
-								nFactor=config['nFactor'], 
-								lr=config['lr'], 
-								dropout=config['dropout'],
-								logdir=FLAGS.logdir, 
-								dl=dl_test, 
-								is_train=False, 
-								force_var_reuse=True)
-		model.loadSavedModel(sess)
-		w = model.getMarkowitzWeight(sess)
-		stats = pd.DataFrame(np.zeros((4,3)), columns=['train', 'valid', 'test'], index=['SR', 'UV', 'Alpha', 'Alpha_weighted'])
-		stats.loc[:,'train'] = model.calculateStatistics(sess, w)
-		stats.loc[:,'valid'] = model_valid.calculateStatistics(sess, w)
-		stats.loc[:,'test'] = model_test.calculateStatistics(sess, w)
-		print(stats)
+	model_valid = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
+							tSize=config['tSize_valid'], 
+							hidden_dims=config['hidden_dims'], 
+							nFactor=FLAGS.nFactor, 
+							lr=config['lr'], 
+							dropout=config['dropout'],
+							logdir=FLAGS.logdir, 
+							dl=dl_valid, 
+							is_train=False, 
+							force_var_reuse=True)
+	model_test = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
+							tSize=config['tSize_test'], 
+							hidden_dims=config['hidden_dims'], 
+							nFactor=FLAGS.nFactor, 
+							lr=config['lr'], 
+							dropout=config['dropout'],
+							logdir=FLAGS.logdir, 
+							dl=dl_test, 
+							is_train=False, 
+							force_var_reuse=True)
+	model.loadSavedModel(sess)
+	w = model.getMarkowitzWeight(sess)
+	stats = pd.DataFrame(np.zeros((4,3)), columns=['train', 'valid', 'test'], index=['SR', 'UV', 'Alpha', 'Alpha_weighted'])
+	stats.loc[:,'train'] = model.calculateStatistics(sess, w)
+	stats.loc[:,'valid'] = model_valid.calculateStatistics(sess, w)
+	stats.loc[:,'test'] = model_test.calculateStatistics(sess, w)
+	print(stats)
 
 if __name__ == '__main__':
 	tf.app.run()
