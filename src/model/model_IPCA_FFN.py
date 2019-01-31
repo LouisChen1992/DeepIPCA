@@ -9,6 +9,72 @@ from src.utils import decomposeReturn
 from src.utils import UnexplainedVariation
 from src.utils import FamaMcBethAlpha
 
+class ModelIPCA_FFN_ensemble:
+	def __init__(self, 
+				individual_feature_dim, 
+				tSize, 
+				hidden_dims, 
+				nFactor, 
+				logdirs, 
+				dl, 
+				force_var_reuse=False):
+		self._logdirs = logdirs
+		self._model = ModelIPCA_FFN(individual_feature_dim=individual_feature_dim, 
+									tSize=tSize, 
+									hidden_dims=hidden_dims, 
+									nFactor=nFactor, 
+									lr=0.0, 
+									dropout=1.0,
+									logdir='.', 
+									dl=dl, 
+									is_train=False,
+									force_var_reuse=force_var_reuse)
+
+	def getBeta(self, sess):
+		beta_list = []
+		for logdir in self._logdirs:
+			self._model.setLogdir(logdir)
+			self._model.loadSavedModel(sess)
+			beta_list.append(self._model.getBeta(sess))
+		return np.array(beta_list).mean(axis=0)
+
+	def getFactors(self, sess, calculate_residual=True):
+		beta = self.getBeta(sess)
+		beta_list = np.split(beta, self._model._splits_np_data)
+		F_list = []
+		if calculate_residual:
+			residual_list = []
+		for R_t, beta_t in zip(self._model._R_list_data, beta_list):
+			F_t = np.linalg.pinv(beta_t.T.dot(beta_t)).dot(beta_t.T.dot(R_t))
+			F_list.append(F_t)
+			if calculate_residual:
+				residual_list.append(R_t - beta_t.dot(F_t))
+		if calculate_residual:
+			residual = np.zeros_like(self._model._mask_data, dtype=float)
+			residual[self._model._mask_data] = np.squeeze(np.concatenate(residual_list))
+			return np.array(F_list), residual
+		else:
+			return np.array(F_list), None
+
+	def getMarkowitzWeight(self, sess):
+		F, _ = self.getFactors(sess, calculate_residual=False)
+		w = self._model._Markowitz(F)
+		return w
+
+	def getSDFFactor(self, sess, w):
+		F, _ = self.getFactors(sess, calculate_residual=False)
+		return F.dot(w)
+
+	def calculateStatistics(self, sess, w):
+		SR = sharpe(self.getSDFFactor(sess, w))
+		_, residual = self.getFactors(sess, calculate_residual=True)
+		R = np.zeros_like(self._model._mask_data, dtype=float)
+		R[self._model._mask_data] = self._model._R_data
+		UV = UnexplainedVariation(R, residual, self._model._mask_data)
+		Alpha = FamaMcBethAlpha(residual, self._model._mask_data, weighted=False)
+		Alpha_weighted = FamaMcBethAlpha(residual, self._model._mask_data, weighted=True)
+		return (SR, UV, Alpha, Alpha_weighted)
+
 class ModelIPCA_FFN:
 	def __init__(self, 
 				individual_feature_dim, 
@@ -194,6 +260,10 @@ class ModelIPCA_FFN:
 						self._dropout_placeholder:1.0}
 		loss, = sess.run(fetches=[self._loss], feed_dict=feed_dict_eval)
 		return loss
+
+	def setLogdir(self, new_logdir):
+		self._logdir = new_logdir
+		self._logdir_nFactor = os.path.join(new_logdir, str(self._nFactor))
 
 	def randomInitialization(self, sess):
 		sess.run(tf.global_variables_initializer())

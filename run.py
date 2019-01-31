@@ -11,9 +11,8 @@ from src.model.model_IPCA_FFN import ModelIPCA_FFN
 tf.flags.DEFINE_string('config', '', 'Path to the file with configurations')
 tf.flags.DEFINE_string('logdir', '', 'Path to save logs and checkpoints')
 tf.flags.DEFINE_integer('nFactor', 1, 'Number of Factors')
-
-tf.flags.DEFINE_boolean('isTrain', True, 'Calculate statistics')
-tf.flags.DEFINE_boolean('randomInitFactors', False, 'Initialize factors randomly')
+tf.flags.DEFINE_boolean('isTrain', True, 'True if train, False if evaluate')
+tf.flags.DEFINE_boolean('randomInitFactors', True, 'Initialize factors randomly')
 
 FLAGS = tf.flags.FLAGS
 
