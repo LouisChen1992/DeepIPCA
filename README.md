@@ -16,11 +16,11 @@ Here we report the results for the number of factor with the best validation Sha
 
 - Number of Factors
 
-| Model              |    |
-|:------------------:|:--:|
-| Naive IPCA         | 12 |
-| Iterative IPCA     | 17 |
-| Deep IPCA (Linear) | 14 |
+| Model              | Optimal Number of Factors |
+|:------------------:|:-------------------------:|
+| Naive IPCA         | 12                        |
+| Iterative IPCA     | 17                        |
+| Deep IPCA (Linear) | 14                        |
 
 
 - Sharpe Ratio
