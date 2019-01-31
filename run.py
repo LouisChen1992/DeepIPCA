@@ -48,7 +48,8 @@ def main(_):
 		model_naive.loadSavedModel(config['nFactor'])
 		initial_F = model_naive.getFactors(dl_train)
 
-	loss_epoch_list = model.train(sess, initial_F=initial_F)
+	loss_epoch_list = model.train(sess, initial_F=initial_F, 
+		numEpoch=config['num_epoch'], maxIter=config['max_iter'], tol=config['tol'])
 
 	if FLAGS.evalStats:
 		model_valid = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
