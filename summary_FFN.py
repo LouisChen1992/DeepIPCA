@@ -59,7 +59,11 @@ def test(config, logdir, nFactor):
 	return stats
 
 def main(_):
-	hp = HyperParameterSpace()
+	hp_dict = {}
+	hp_dict['num_epoch'] = [128, 256, 384, 512]
+	hp_dict['max_iter'] = [8, 16, 32, 64, 128]
+
+	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
 	param_types = hp.getParamsType()
 	config_list = sorted([item for item in os.listdir(FLAGS.config_path) if item.endswith('.json')])

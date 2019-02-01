@@ -1,18 +1,8 @@
 class HyperParameterSpace:
-	def __init__(self):
+	def __init__(self, hp):
 		"""Define Hyper-Parameters. 
-
-		Returns:
-			hp: Map from hyper-parameter to a list of choices. 
 		"""
-		self.hp = {}
-
-		### ADD CODE HERE
-		self.hp['hidden_dims'] = [[32], [16], [8], [4],
-								[32,32], [16,16], [8,8], [4,4],
-								[32,16], [16,8], [8,4], [4,2]]
-		self.hp['lr'] = [0.1, 0.01, 0.001]
-		self.hp['dropout'] = [0.99, 0.95, 0.9]
+		self.hp = hp
 
 	def iterateAllCombinations(self):
 		"""Go through the whole combinations of hyper-parameters. 
