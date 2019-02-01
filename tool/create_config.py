@@ -2,7 +2,7 @@ import argparse
 import os
 import json
 
-from src.hyper_parameter.HyperParameterSpace import HyperParameterSpace
+from HyperParameterSpace import HyperParameterSpace
 
 parser = argparse.ArgumentParser(description='Create configurations')
 parser.add_argument('--src', help='Source config file')
