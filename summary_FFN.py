@@ -75,7 +75,7 @@ def main(_):
 		path_config = os.path.join(FLAGS.config_path, config_file)
 		logdir = os.path.join(FLAGS.logdir_path, config_file.rstrip('.json'))
 		
-		hp_idx = config_file.rstrip('.json').split('_', 3)
+		hp_idx = [int(item) for item in config_file.rstrip('.json').split('_', 3)[-1].split('_')]
 		hp_val = hp.idx2Val(hp_idx)
 
 		with open(path_config, 'r') as file:
