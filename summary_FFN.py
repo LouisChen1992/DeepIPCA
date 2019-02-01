@@ -66,6 +66,11 @@ def main(_):
 	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
 	param_types = hp.getParamsType()
+	###
+	print(params)
+	print(param_types)
+	###
+
 	config_list = sorted([item for item in os.listdir(FLAGS.config_path) if item.endswith('.json')])
 	config_count = len(config_list)
 	df_list = {'idx':np.arange(config_count)}
@@ -81,6 +86,7 @@ def main(_):
 		
 		hp_idx = [int(item) for item in config_file.rstrip('.json').split('_', 3)[-1].split('_')]
 		hp_val = hp.idx2Val(hp_idx)
+		print(hp_val)
 
 		with open(path_config, 'r') as file:
 			config = json.load(file)

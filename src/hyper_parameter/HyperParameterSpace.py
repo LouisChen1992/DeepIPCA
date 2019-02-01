@@ -3,15 +3,15 @@ class HyperParameterSpace:
 		"""Define Hyper-Parameters. 
 		"""
 		self.hp = hp
+		self.params = sorted(list(self.hp.keys()))
 
 	def iterateAllCombinations(self):
 		"""Go through the whole combinations of hyper-parameters. 
 		"""
-		params = list(self.hp.keys())
-		idx = [0] * len(params)
-		maxIdx = [len(self.hp[param]) for param in params]
+		idx = [0] * len(self.params)
+		maxIdx = [len(self.hp[param]) for param in self.params]
 		while True:
-			yield self.idx2Str(idx), [(param, self.hp[param][i]) for param, i in zip(params, idx)]
+			yield self.idx2Str(idx), [(param, self.hp[param][i]) for param, i in zip(self.params, idx)]
 			self.addOneIdx(idx, maxIdx)
 			if self.isZeroIdx(idx):
 				break
@@ -45,12 +45,10 @@ class HyperParameterSpace:
 	def idx2Val(self, idx):
 		"""Convert idx to values. 
 		"""
-		params = list(self.hp.keys())
-		return [self.hp[param][i] for param, i in zip(params, idx)]
+		return [self.hp[param][i] for param, i in zip(self.params, idx)]
 
 	def getParamsName(self):
 		return list(self.hp.keys())
 
 	def getParamsType(self):
-		params = list(self.hp.keys())
-		return list([type(self.hp[param][0]) for param in params])
+		return list([type(self.hp[param][0]) for param in self.params])
