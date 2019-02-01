@@ -1,7 +1,6 @@
 import os
 
 if __name__ == '__main__':
-	root_dir = '..'
 	main_code = 'run_FFN.py'
 	config_path = 'configs/IPCA_FFN'
 	logdir_path = 'model/IPCA_FFN'
@@ -16,8 +15,7 @@ if __name__ == '__main__':
 
 	for job_id in range(config_count):
 		config_file = config_list[job_id]
-		job_path = os.path.join(root_dir, 'job_%d.sh' %job_id)
-		with open(job_path, 'w') as file:
+		with open('job_%d.sh' %job_id, 'w') as file:
 			for nFactor in nFactor_list:
 				values = [os.path.join(config_path, config_file), os.path.join(logdir_path, version, config_file.rstrip('.json')), str(nFactor)]
 				cmd = ' '.join(['python3', main_code] + [sep.join([option, value]) for option, value in zip(options, values)])
