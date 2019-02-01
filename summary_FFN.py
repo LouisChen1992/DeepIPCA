@@ -86,7 +86,9 @@ def main(_):
 			for param, val in zip(params, hp_val):
 				df.loc[i, param] = val
 			df.loc[i, 'nFactor'] = nFactor
-			df.loc[i, ['SR_train','SR_valid','SR_test']] = stats[0].values
+			df.loc[i, 'SR_train'] = stats.values[0,0]
+			df.loc[i, 'SR_valid'] = stats.values[0,1]
+			df.loc[i, 'SR_test'] = stats.values[0,2]
 	print(df)
 
 if __name__ == '__main__':
