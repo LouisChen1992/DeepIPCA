@@ -48,7 +48,7 @@ class HyperParameterSpace:
 		return [self.hp[param][i] for param, i in zip(self.params, idx)]
 
 	def getParamsName(self):
-		return list(self.hp.keys())
+		return self.params
 
 	def getParamsType(self):
 		return list([type(self.hp[param][0]) for param in self.params])
