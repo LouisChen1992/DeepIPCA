@@ -15,9 +15,12 @@ if __name__ == '__main__':
 
 	for job_id in range(config_count):
 		config_file = config_list[job_id]
+		logdir_path_config = os.path.join(logdir_path, version, config_file.rstrip('.json'))
 		with open('job_%d.sh' %job_id, 'w') as file:
+			cmd = 'mkdir -p ' + logdir_path_config
+			file.write(cmd+'\n')
 			for nFactor in nFactor_list:
-				values = [os.path.join(config_path, config_file), os.path.join(logdir_path, version, config_file.rstrip('.json')), str(nFactor)]
+				values = [os.path.join(config_path, config_file), logdir_path_config, str(nFactor)]
 				cmd = ' '.join(['python3', main_code] + [sep.join([option, value]) for option, value in zip(options, values)])
 				file.write(cmd+'\n')
 			if notification:
