@@ -3,10 +3,10 @@ import os
 if __name__ == '__main__':
 	root_dir = '..'
 	main_code = 'run_FFN.py'
-	config_path = os.path.join(root_dir, 'configs/IPCA_FFN')
-	logdir_path = os.path.join(root_dir, 'model/IPCA_FFN')
+	config_path = 'configs/IPCA_FFN'
+	logdir_path = 'model/IPCA_FFN'
 	version = 'v1'
-	notification = False
+	notification = True
 	sep = '='
 	options = ['--config', '--logdir', '--nFactor']
 	nFactor_list = [i+1 for i in range(20)]
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 		job_path = os.path.join(root_dir, 'job_%d.sh' %job_id)
 		with open(job_path, 'w') as file:
 			for nFactor in nFactor_list:
-				values = [os.path.join(config_path, config_file), os.path.join(logdir_path, version), str(nFactor)]
+				values = [os.path.join(config_path, config_file), os.path.join(logdir_path, version, config_file.rstrip('.json')), str(nFactor)]
 				cmd = ' '.join(['python3', main_code] + [sep.join([option, value]) for option, value in zip(options, values)])
 				file.write(cmd+'\n')
 			if notification:
