@@ -10,7 +10,7 @@ if __name__ == '__main__':
 	options = ['--config', '--logdir', '--nFactor']
 	nFactor_list = [i+1 for i in range(20)]
 
-	config_list = [item for item in os.listdir(config_path) if item.endswith('.json')]
+	config_list = sorted([item for item in os.listdir(config_path) if item.endswith('.json')])
 	config_count = len(config_list)
 
 	for job_id in range(config_count):
