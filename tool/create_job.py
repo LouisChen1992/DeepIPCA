@@ -21,5 +21,5 @@ if __name__ == '__main__':
 				cmd = ' '.join(['python3', main_code] + [sep.join([option, value]) for option, value in zip(options, values)])
 				file.write(cmd+'\n')
 			if notification:
-				cmd = 'python3 ~/tool/sendEmail.py --FROM lychSendOnly@hotmail.com --TO lych@stanford.edu --p send1Email --s Job\ %d\ Finished! --MSG job_path' %job_id
+				cmd = 'python3 ~/tool/sendEmail.py --FROM lychSendOnly@hotmail.com --TO lych@stanford.edu --p send1Email --s Job\ %d\ Finished! --MSG job_%d.sh' %(job_id, job_id)
 				file.write(cmd+'\n')
