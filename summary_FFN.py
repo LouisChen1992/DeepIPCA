@@ -66,10 +66,6 @@ def main(_):
 	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
 	param_types = hp.getParamsType()
-	###
-	print(params)
-	print(param_types)
-	###
 
 	config_list = sorted([item for item in os.listdir(FLAGS.config_path) if item.endswith('.json')])
 	config_count = len(config_list)
@@ -86,7 +82,6 @@ def main(_):
 		
 		hp_idx = [int(item) for item in config_file.rstrip('.json').split('_', 3)[-1].split('_')]
 		hp_val = hp.idx2Val(hp_idx)
-		print(hp_val)
 
 		with open(path_config, 'r') as file:
 			config = json.load(file)
@@ -99,7 +94,9 @@ def main(_):
 			df.loc[i, 'SR_train'] = stats.values[0,0]
 			df.loc[i, 'SR_valid'] = stats.values[0,1]
 			df.loc[i, 'SR_test'] = stats.values[0,2]
-	print(df)
+	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
+	store['summary'] = df
+	store.close()
 
 if __name__ == '__main__':
 	tf.app.run()
