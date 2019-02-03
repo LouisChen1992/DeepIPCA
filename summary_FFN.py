@@ -60,8 +60,11 @@ def test(config, logdir, nFactor):
 
 def main(_):
 	hp_dict = {}
-	hp_dict['num_epoch'] = [128, 256, 384, 512]
-	hp_dict['max_iter'] = [8, 16, 32, 64, 128]
+	hp_dict['hidden_dims'] = [[32], [16], [8], [4],
+						[32,32], [16,16], [8,8], [4,4],
+						[32,16], [16,8], [8,4], [4,2]]
+	hp_dict['lr'] = [0.002, 0.001, 0.0005, 0.0002]
+	hp_dict['dropout'] = [0.99, 0.95, 0.9]
 
 	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
