@@ -104,7 +104,7 @@ def main(_):
 			# df.loc[i, 'SR_test'] = stats.values[0,2]
 	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
 	for i in range(20):
-		store[i+1] = df_map[i+1]
+		store['nFactor_%d' %(i+1)] = df_map[i+1]
 	store.close()
 
 if __name__ == '__main__':
