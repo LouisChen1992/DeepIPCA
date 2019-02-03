@@ -77,6 +77,7 @@ def main(_):
 		df_list[param] = np.empty(shape=(config_count,), dtype=param_type)
 	df = pd.DataFrame(df_list)
 	df.set_index('idx', inplace=True)
+	df_map = {i+1:df.copy() for i in range(20)}
 
 	for i in range(config_count):
 		config_file = config_list[i]
@@ -92,14 +93,19 @@ def main(_):
 		for nFactor in nFactor_list:
 			stats = test(config, logdir, nFactor)
 			for param, val in zip(params, hp_val):
-				df.loc[i, param] = val
-			df.loc[i, 'nFactor'] = nFactor
-			df.loc[i, 'SR_train'] = stats.values[0,0]
-			df.loc[i, 'SR_valid'] = stats.values[0,1]
-			df.loc[i, 'SR_test'] = stats.values[0,2]
-	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
-	store['summary'] = df
-	store.close()
+				df_map[nFactor].loc[i, param] = val
+				# df.loc[i, param] = val
+			# df.loc[i, 'nFactor'] = nFactor
+			df_map[nFactor].loc[i, 'SR_train'] = stats.values[0,0]
+			df_map[nFactor].loc[i, 'SR_valid'] = stats.values[0,1]
+			df_map[nFactor].loc[i, 'SR_test'] = stats.values[0,2]
+			# df.loc[i, 'SR_train'] = stats.values[0,0]
+			# df.loc[i, 'SR_valid'] = stats.values[0,1]
+			# df.loc[i, 'SR_test'] = stats.values[0,2]
+	for i in range(20):
+		store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary_nFactor_%d.h5' %i+1))
+		store['summary'] = df_map[i+1]
+		store.close()
 
 if __name__ == '__main__':
 	tf.app.run()
