@@ -102,10 +102,10 @@ def main(_):
 			# df.loc[i, 'SR_train'] = stats.values[0,0]
 			# df.loc[i, 'SR_valid'] = stats.values[0,1]
 			# df.loc[i, 'SR_test'] = stats.values[0,2]
+	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
 	for i in range(20):
-		store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary_nFactor_%d.h5' %i+1))
-		store['summary'] = df_map[i+1]
-		store.close()
+		store[i+1] = df_map[i+1]
+	store.close()
 
 if __name__ == '__main__':
 	tf.app.run()
