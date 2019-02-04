@@ -68,13 +68,12 @@ def main(_):
 
 	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
-	param_types = hp.getParamsType()
 
 	config_list = sorted([item for item in os.listdir(FLAGS.config_path) if item.endswith('.json')])
 	config_count = len(config_list)
 	df_list = {'idx':np.arange(config_count)}
-	for param, param_type in zip(params, param_types):
-		df_list[param] = np.empty(shape=(config_count,), dtype=param_type)
+	for param in params:
+		df_list[param] = np.empty(shape=(config_count,), dtype=str)
 	df = pd.DataFrame(df_list)
 	df.set_index('idx', inplace=True)
 	df_map = {i+1:df.copy() for i in range(20)}
@@ -93,7 +92,7 @@ def main(_):
 		for nFactor in nFactor_list:
 			stats = test(config, logdir, nFactor)
 			for param, val in zip(params, hp_val):
-				df_map[nFactor].loc[i, param] = val
+				df_map[nFactor].loc[i, param] = str(val)
 				# df.loc[i, param] = val
 			# df.loc[i, 'nFactor'] = nFactor
 			df_map[nFactor].loc[i, 'SR_train'] = stats.values[0,0]
