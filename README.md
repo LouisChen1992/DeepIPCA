@@ -37,6 +37,7 @@ Here we report the results for the number of factor with the best validation Sha
  <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_naive/SR.png" width="400" title="Naive IPCA">
  <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_Kelly/SR.png" width="400" title="Iterative IPCA">
  <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_KellyWithFFN/SR.png" width="400" title="Deep IPCA (Linear)">
+ <img src="https://github.com/LouisChen1992/DeepIPCA/blob/master/model/IPCA_FFN/hpSearch/SR.png" width="400" title="Deep IPCA (hpSearch)">
 </p>
 
 - Unexplained Variation
