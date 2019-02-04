@@ -93,14 +93,9 @@ def main(_):
 			stats = test(config, logdir, nFactor)
 			for param, val in zip(params, hp_val):
 				df_map[nFactor].loc[i, param] = str(val)
-				# df.loc[i, param] = val
-			# df.loc[i, 'nFactor'] = nFactor
 			df_map[nFactor].loc[i, 'SR_train'] = stats.values[0,0]
 			df_map[nFactor].loc[i, 'SR_valid'] = stats.values[0,1]
 			df_map[nFactor].loc[i, 'SR_test'] = stats.values[0,2]
-			# df.loc[i, 'SR_train'] = stats.values[0,0]
-			# df.loc[i, 'SR_valid'] = stats.values[0,1]
-			# df.loc[i, 'SR_test'] = stats.values[0,2]
 	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
 	for i in range(20):
 		store['nFactor_%d' %(i+1)] = df_map[i+1]
