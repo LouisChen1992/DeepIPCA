@@ -24,8 +24,6 @@ def test(config, logdir, nFactor, IPCA_model):
 		model, model_valid, model_test = construct_FFN(config, logdir, nFactor, dl_train, dl_valid, dl_test)
 	elif IPCA_model == 'GDFFN':
 		model, model_valid, model_test = construct_FFN(config, logdir, nFactor, dl_train, dl_valid, dl_test)
-	else:
-		raise ValueError('Invalid Model! ')
 
 	gpu_options = tf.GPUOptions(allow_growth=True)
 	sess_config = tf.ConfigProto(gpu_options=gpu_options)
@@ -104,11 +102,20 @@ def construct_GDFFN(config, logdir, nFactor, dl_train, dl_valid, dl_test):
 
 def main(_):
 	hp_dict = {}
-	hp_dict['hidden_dims'] = [[32], [16], [8], [4],
-						[32,32], [16,16], [8,8], [4,4],
-						[32,16], [16,8], [8,4], [4,2]]
-	hp_dict['lr'] = [0.002, 0.001, 0.0005, 0.0002]
-	hp_dict['dropout'] = [0.99, 0.95, 0.9]
+	if FLAGS.model == 'FFN':
+		hp_dict['hidden_dims'] = [[32], [16], [8], [4],
+							[32,32], [16,16], [8,8], [4,4],
+							[32,16], [16,8], [8,4], [4,2]]
+		hp_dict['lr'] = [0.002, 0.001, 0.0005, 0.0002]
+		hp_dict['dropout'] = [0.99, 0.95, 0.9]
+	elif FLAGS.model == 'GDFFN':
+		hp_dict['hidden_dims'] = [[64], [32], [16], 
+							[64,64], [32,32], [16,16],
+							[64,32], [32,16]]
+		hp_dict['lr'] = [0.002, 0.001, 0.0005, 0.0002]
+		hp_dict['dropout'] = [0.99, 0.95, 0.9]
+	else:
+		raise ValueError('Invalid Model! ')
 
 	hp = HyperParameterSpace(hp_dict)
 	params = hp.getParamsName()
