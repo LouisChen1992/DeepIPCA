@@ -21,9 +21,9 @@ def test(config, logdir, nFactor, IPCA_model):
 
 	tf.reset_default_graph()
 	if IPCA_model == 'FFN':
-		model, model_valid, model_test = construct_FFN(config, logdir, nFactor)
+		model, model_valid, model_test = construct_FFN(config, logdir, nFactor, dl_train, dl_valid, dl_test)
 	elif IPCA_model == 'GDFFN':
-		model, model_valid, model_test = construct_FFN(config, logdir, nFactor)
+		model, model_valid, model_test = construct_FFN(config, logdir, nFactor, dl_train, dl_valid, dl_test)
 	else:
 		raise ValueError('Invalid Model! ')
 
@@ -38,7 +38,7 @@ def test(config, logdir, nFactor, IPCA_model):
 	stats.loc[:,'test'] = model_test.calculateStatistics(sess, w)
 	return stats
 
-def construct_FFN(config, logdir, nFactor):
+def construct_FFN(config, logdir, nFactor, dl_train, dl_valid, dl_test):
 	model = ModelIPCA_FFN(individual_feature_dim=config['individual_feature_dim'], 
 						tSize=config['tSize_train'], 
 						hidden_dims=config['hidden_dims'], 
@@ -70,7 +70,7 @@ def construct_FFN(config, logdir, nFactor):
 							force_var_reuse=True)
 	return model, model_valid, model_test
 
-def construct_GDFFN(config, logdir, nFactor):
+def construct_GDFFN(config, logdir, nFactor, dl_train, dl_valid, dl_test):
 	model = ModelIPCA_GDFFN(individual_feature_dim=config['individual_feature_dim'], 
 							tSize=config['tSize_train'], 
 							hidden_dims=config['hidden_dims'], 
