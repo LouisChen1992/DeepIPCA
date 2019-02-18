@@ -96,7 +96,9 @@ def main(_):
 			df_map[nFactor].loc[i, 'SR_train'] = stats.values[0,0]
 			df_map[nFactor].loc[i, 'SR_valid'] = stats.values[0,1]
 			df_map[nFactor].loc[i, 'SR_test'] = stats.values[0,2]
-		if i == 3:
+			if nFactor == 2:
+				break
+		if i == 1:
 			break
 	store = pd.HDFStore(os.path.join(FLAGS.logdir_path, 'summary.h5'))
 	for i in range(20):
